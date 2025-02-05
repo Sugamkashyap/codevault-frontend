@@ -2,5 +2,8 @@ export interface Snippet {
   id: string;
   title: string;
   content: string;
-  // Add other properties as needed
+  language: string;
+  tags: string[];
+  createdAt: Date;
+  updatedAt: Date;
 } 
