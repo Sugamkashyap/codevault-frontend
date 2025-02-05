@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { tags as t } from '@lezer/highlight';
 import { languages } from '@codemirror/language-data';
+import { LanguageSupport } from '@codemirror/language';
 import { motion } from 'framer-motion';
+import { Extension } from '@codemirror/state';
 
 interface SnippetFormProps {
   initialData?: {
@@ -15,7 +17,7 @@ interface SnippetFormProps {
   isLoading: boolean;
 }
 
-const SnippetForm = ({ initialData, onSubmit, isLoading }: SnippetFormProps) => {
+const SnippetForm: React.FC<SnippetFormProps> = ({ initialData, onSubmit, isLoading }) => {
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     language: initialData?.language || 'javascript',
@@ -23,6 +25,29 @@ const SnippetForm = ({ initialData, onSubmit, isLoading }: SnippetFormProps) => 
     tags: initialData?.tags || [],
   });
   const [tagInput, setTagInput] = useState('');
+  const [extensions, setExtensions] = useState<Extension[]>([]);
+
+  useEffect(() => {
+    const loadExtension = async () => {
+      const selectedLanguage = languages.find(
+        (l) => l.name.toLowerCase() === formData.language.toLowerCase()
+      );
+
+      if (selectedLanguage && selectedLanguage.load) {
+        try {
+          const loadedExtension: LanguageSupport = await selectedLanguage.load();
+          setExtensions([loadedExtension]);
+        } catch (error) {
+          console.error('Error loading language support:', error);
+          setExtensions([]); // Fallback to no extensions on error
+        }
+      } else {
+        setExtensions([]); // Fallback to no extensions if language not found or load function is undefined
+      }
+    };
+
+    loadExtension();
+  }, [formData.language]);
 
   const handleAddTag = () => {
     if (tagInput && !formData.tags.includes(tagInput)) {
@@ -87,7 +112,7 @@ const SnippetForm = ({ initialData, onSubmit, isLoading }: SnippetFormProps) => 
             height="200px"
             onChange={(value) => setFormData({ ...formData, content: value })}
             theme="dark"
-            extensions={[languages.find(l => l.name.toLowerCase() === formData.language)?.load() || []]}
+            extensions={extensions}
           />
         </div>
       </div>

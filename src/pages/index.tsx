@@ -10,7 +10,7 @@ const DashboardPage = () => {
   const router = useRouter();
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSnippets();
@@ -19,7 +19,7 @@ const DashboardPage = () => {
   const fetchSnippets = async () => {
     try {
       const data = await getSnippets();
-      setSnippets(data);
+      setSnippets(data as Snippet[]);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to load snippets');
     } finally {

@@ -6,6 +6,8 @@ import { Snippet } from '../../types';
 import { motion } from 'framer-motion';
 import CodeMirror from '@uiw/react-codemirror';
 import { languages } from '@codemirror/language-data';
+import { LanguageSupport } from '@codemirror/language';
+import { Extension } from '@codemirror/state';
 
 const ViewSnippetPage = () => {
   const router = useRouter();
@@ -13,6 +15,7 @@ const ViewSnippetPage = () => {
   const [snippet, setSnippet] = useState<Snippet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [extensions, setExtensions] = useState<Extension[]>([]);
 
   useEffect(() => {
     const fetchSnippet = async () => {
@@ -30,6 +33,30 @@ const ViewSnippetPage = () => {
 
     fetchSnippet();
   }, [id]);
+
+  useEffect(() => {
+    const loadExtension = async () => {
+      if (snippet) {
+        const selectedLanguage = languages.find(
+          (l) => l.name.toLowerCase() === snippet.language.toLowerCase()
+        );
+
+        if (selectedLanguage && selectedLanguage.load) {
+          try {
+            const loadedExtension: LanguageSupport = await selectedLanguage.load();
+            setExtensions([loadedExtension]);
+          } catch (error) {
+            console.error('Error loading language support:', error);
+            setExtensions([]);
+          }
+        } else {
+          setExtensions([]);
+        }
+      }
+    };
+
+    loadExtension();
+  }, [snippet]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -65,7 +92,7 @@ const ViewSnippetPage = () => {
               height="400px"
               editable={false}
               theme="dark"
-              extensions={[languages.find(l => l.name.toLowerCase() === snippet.language)?.load() || []]}
+              extensions={extensions}
             />
           </div>
         </div>

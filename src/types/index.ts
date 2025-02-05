@@ -11,8 +11,8 @@ export interface Snippet {
   language: string;
   content: string;
   tags: string[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   user: string;
 }
 

@@ -4,5 +4,5 @@ declare module '@heroicons/react/outline' {
 
   export const SearchIcon: React.FC<SVGProps<SVGSVGElement>>;
   export const LogoutIcon: React.FC<SVGProps<SVGSVGElement>>;
-  // Add other icons you are using similarly
+  // Add other icons as needed
 } 

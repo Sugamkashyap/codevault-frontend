@@ -1,15 +1,16 @@
+import React from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import { 
   HomeIcon, 
-  CodeIcon, 
-  SearchIcon, 
-  LogoutIcon 
-} from '@heroicons/react/outline';
+  QrCodeIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon 
+} from '@heroicons/react/24/outline';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -34,12 +35,12 @@ const Sidebar = () => {
         </Link>
         
         <Link href="/snippets" className="flex items-center px-4 py-2 hover:bg-gray-100">
-          <CodeIcon className="h-6 w-6" />
+          <QrCodeIcon className="h-6 w-6" />
           {isOpen && <span className="ml-4">Snippets</span>}
         </Link>
         
         <Link href="/search" className="flex items-center px-4 py-2 hover:bg-gray-100">
-          <SearchIcon className="h-6 w-6" />
+          <MagnifyingGlassIcon className="h-6 w-6" />
           {isOpen && <span className="ml-4">Search</span>}
         </Link>
         
@@ -47,7 +48,7 @@ const Sidebar = () => {
           onClick={handleLogout}
           className="w-full flex items-center px-4 py-2 hover:bg-gray-100"
         >
-          <LogoutIcon className="h-6 w-6" />
+          <XMarkIcon className="h-6 w-6" />
           {isOpen && <span className="ml-4">Logout</span>}
         </button>
       </nav>

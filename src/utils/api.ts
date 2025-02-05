@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { Snippet } from '../types'; // Import the Snippet type from the correct path
+import { LanguageSupport } from '@codemirror/language';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -27,9 +29,23 @@ export const createSnippet = async (snippetData: Partial<Snippet>) => {
   return response.data;
 };
 
-export const getSnippets = async () => {
-  const response = await api.get('/api/snippets');
-  return response.data;
+export const getSnippets = async (): Promise<Snippet[]> => {
+  const response = await fetch('/api/snippets');
+  if (!response.ok) {
+    throw new Error('Failed to fetch snippets');
+  }
+  const data = await response.json();
+  console.log(data); // Log the response to inspect its structure
+  return data; // Ensure this matches the Snippet type
+};
+
+export const getSnippetById = async (id: string): Promise<Snippet | null> => {
+  const response = await fetch(`/api/snippets/${id}`);
+  if (!response.ok) {
+    return null; // Handle error appropriately
+  }
+  const snippet: Snippet = await response.json();
+  return snippet;
 };
 
 export const updateSnippet = async (id: string, snippetData: Partial<Snippet>) => {
