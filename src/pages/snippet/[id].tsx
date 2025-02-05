@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
-import { getSnippetById } from '../../utils/api';
+import { getSnippetById, getSnippets } from '../../utils/api';
 import { Snippet } from '../../types';
 import { motion } from 'framer-motion';
 import CodeMirror from '@uiw/react-codemirror';
